@@ -5,6 +5,8 @@ const jwt=require('jsonwebtoken');
 const bcrypt=require('bcryptjs');
 const nodemailer=require('nodemailer');
 
+const otpStorage = {};
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -22,11 +24,13 @@ const sendOtpEmail = async (email, otp) => {
     });
 };
 
+const generateToken=(email)=>{return jwt.sign({email},process.env.SECRET,{expiresIn:'1h'})}
+
 
 
 const sendMail=async(email)=>{
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpStorage[email] = { otp, password: hashpassword };
+    otpStorage[email] = { otp };
     await sendOtpEmail(email, otp);
 }
 
@@ -35,10 +39,22 @@ try {
     const {email,password,name}=req.body;
     const account=getDb('accounts');
     const user=await account.findOne({email});
+
     if(user) return res.status(400).json({msg:'User Already Exists !!!'});
     const hashpassword=await bcrypt.hash(password,12);
+
     await account.insertOne({email:email,password:hashpassword,name:name});
     await sendMail(email);
+
+    const token=generateToken(email);
+    
+        res.cookie('authToken', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",  
+            sameSite: 'Strict',
+            maxAge: 3600000 
+        });
+    
     return res.status(200).json({msg:'User Registered Successfully'});
 } catch (error) {
     console.log(error);
@@ -49,12 +65,26 @@ try {
 router.post('/log',async(req,res)=>{
     try {
         const {email,password}=req.body;
+
         const account=getDb('accounts');
         const user=await account.findOne({email});
+
         if(!user) return res.status(400).json({msg:'User not found !!!'});
-        const check=bcrypt.compare(password,user.password);
+
+        const check=await bcrypt.compare(password,user.password);
         if(!check) return res.status(400).json({msg:'Invalid Access !!!'});
-        sendMail(email);
+
+        await sendMail(email);
+        const token=generateToken(email);
+
+        res.cookie('authToken', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",  
+            sameSite: 'Strict',
+            maxAge: 3600000 
+        });
+    
+
         return res.status(200).json({msg:'User Loggedin Successfully!!!'});
     } catch (error) {
         console.log(error);

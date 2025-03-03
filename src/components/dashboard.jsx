@@ -6,7 +6,7 @@ const Dashboard = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const resp1 = await fetch(`${process.env.BACKEND}/api/videos/fetch`, {
+        const resp1 = await fetch(`${process.env.VITE_BACKEND}/data/fetch`, {
           method: 'GET',
         });
 
