@@ -1,24 +1,27 @@
-import React,{useEffect, useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
-const [videos, setVideos]=useState([]);
+const Dashboard = () => {
+  const [videos, setVideos] = useState([]);
 
-useEffect(()=>{
-  try {
-    const getData=async()=>{
-        const resp1=await fetch(`${process.env.BACKEND}/data/fetch`,{
-            method:'GET',
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const resp1 = await fetch(`${process.env.BACKEND}/api/videos/fetch`, {
+          method: 'GET',
         });
-        if(resp1.ok){
-            const data=await resp1.json();
-            setVideos(data);
-        }
-    }
-  } catch (error) {
-    console.log("Error is : ",error);
-  }
-},[]);
 
-const dashboard = () => {
+        if (resp1.ok) {
+          const data = await resp1.json();
+          setVideos(data);
+        }
+      } catch (error) {
+        console.log("Error is:", error);
+      }
+    };
+
+    getData(); 
+  }, []);
+
   return (
     <div>
       {videos.length > 0 ? (
@@ -32,7 +35,7 @@ const dashboard = () => {
         <p>No videos available</p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default dashboard;
+export default Dashboard;
