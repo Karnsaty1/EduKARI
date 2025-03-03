@@ -10,9 +10,10 @@ const corsOptions={
     credentials:true
 }
 app.use(cors(corsOptions));
-
+app.use('/data',require('./routes/data'));
+app.use('/auth',require('./routes/auth'));
 app.get('/',(req,res)=>{
-    res.sendFile(__dirname,'/public/index.html');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, ()=>{

@@ -32,16 +32,17 @@ const sendMail=async(email)=>{
 
 router.post('/sign',async(req,res)=>{
 try {
-    const {email,passowrd}=req.body;
+    const {email,password,name}=req.body;
     const account=getDb('accounts');
     const user=await account.findOne({email});
     if(user) return res.status(400).json({msg:'User Already Exists !!!'});
-    const hashpassword=await bcrypt.hash(passowrd,12);
-    await account.insertOne({email:email,passowrd:hashpassword});
+    const hashpassword=await bcrypt.hash(password,12);
+    await account.insertOne({email:email,password:hashpassword,name:name});
     await sendMail(email);
     return res.status(200).json({msg:'User Registered Successfully'});
 } catch (error) {
     console.log(error);
+    res.status(500).json({msg:'Internal Server Error !!!'});
 }
 });
 
@@ -51,11 +52,12 @@ router.post('/log',async(req,res)=>{
         const account=getDb('accounts');
         const user=await account.findOne({email});
         if(!user) return res.status(400).json({msg:'User not found !!!'});
-        const check=bcrypt.compare(password,user.passowrd);
+        const check=bcrypt.compare(password,user.password);
         if(!check) return res.status(400).json({msg:'Invalid Access !!!'});
         sendMail(email);
         return res.status(200).json({msg:'User Loggedin Successfully!!!'});
     } catch (error) {
         console.log(error);
+        res.status(500).json({msg:'Internal Server Error !!!'});
     }
 });
