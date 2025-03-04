@@ -54,6 +54,19 @@ try {
             sameSite: 'Strict',
             maxAge: 3600000 
         });
+        res.cookie('email', email, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",  
+            sameSite: 'Strict',
+            maxAge: 3600000 
+        });
+    
+        res.cookie('name', name, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",  
+            sameSite: 'Strict',
+            maxAge: 3600000 
+        });
     
     return res.status(200).json({msg:'User Registered Successfully'});
 } catch (error) {
@@ -78,6 +91,20 @@ router.post('/log',async(req,res)=>{
         const token=generateToken(email);
 
         res.cookie('authToken', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",  
+            sameSite: 'Strict',
+            maxAge: 3600000 
+        });
+    
+        res.cookie('email', email, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",  
+            sameSite: 'Strict',
+            maxAge: 3600000 
+        });
+    
+        res.cookie('name', user.name, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",  
             sameSite: 'Strict',
