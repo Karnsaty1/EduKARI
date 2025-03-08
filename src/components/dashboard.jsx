@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom';
 const Dashboard = () => {
   const [videos, setVideos] = useState([]);
+  
 
   useEffect(() => {
     const getData = async () => {
@@ -16,6 +17,7 @@ const Dashboard = () => {
         }
         else{
           console.log(resp1);
+          
           const r=await resp1.text();
           console.log(r);
 
@@ -33,10 +35,15 @@ const Dashboard = () => {
       <Link to='/upload'><button>Add video</button></Link>
       {videos.length > 0 ? (
         videos.map((video, index) => (
-          <video key={index} controls width="400" style={{margin:'10px'}}>
+          <div key={index} className="video-card" style={{border:'2px solid black', margin:'10px 0px'}}>
+          <h3 style={{margin:'20px auto'}}>{video.name}</h3>
+          <h4 style={{margin:'20px auto'}}>{video.title}</h4>
+          <p style={{margin:'20px auto'}}>{video.description}</p>
+          <video controls width="50%">
             <source src={video.videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
+        </div>
         ))
       ) : (
         <p>No videos available</p>
