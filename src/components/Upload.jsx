@@ -22,21 +22,25 @@ const Upload = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit=async()=>{
+  const handleSubmit=async(e)=>{
+    e.preventDefault();
     try {
         const resp1=await fetch(`${import.meta.env.VITE_BACKEND}/data/upload`,{
             method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
+           
             credentials:'include',
             body:data
         });
         if(!resp1.ok){
             console.log(resp1);
+            const text=await resp1.text();
+            console.log(text);   
+        }
+        else{
+          alert("Uploaded Successfully !!!");
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
   }
 
@@ -52,7 +56,7 @@ const Upload = () => {
     onChange={handleChange}
     required
   />
-  <input
+  <textarea
     type="text"
     name="description"
     placeholder="Video Description"

@@ -33,7 +33,7 @@ const Dashboard = () => {
       <Link to='/upload'><button>Add video</button></Link>
       {videos.length > 0 ? (
         videos.map((video, index) => (
-          <video key={index} controls width="400">
+          <video key={index} controls width="400" style={{margin:'10px'}}>
             <source src={video.videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
