@@ -8,7 +8,7 @@ const NavbarBeforeLog = () => {
       <nav className='navbar-forul'>
         <ul type='none'>
             <li className='Tagile'><strong>Stream</strong></li>
-             <li><Link><button>SignUp</button></Link></li>
+             <li><Link to='/sign'><button>SignUp</button></Link></li>
             
           
         </ul>

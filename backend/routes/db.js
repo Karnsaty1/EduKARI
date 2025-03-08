@@ -1,6 +1,4 @@
 const {MongoClient}=require('mongodb');
-
-
 const userName = encodeURIComponent(process.env.MONGO_USERNAME);
 const password = encodeURIComponent(process.env.MONGO_PASSCODE);
 const db_name=process.env.MONGO_DB;
@@ -10,13 +8,13 @@ const connectDB=async()=>{
     try {
         const client=new MongoClient(process.env.MONGO_URL);
         await client.connect();
+        db_1=client.db(db_name);
+        await db_1.collection('test').insertOne({ msg: 'DB Initialized' });
         console.log('connected 🌍🌎🌏!!!');
-        db_1=client.db(db_name)
     } catch (error) {
         console.log(error);
     }
 }
-
 
 const getDb = (collectionName) => {
     if (!db_1) {

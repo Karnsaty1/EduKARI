@@ -3,6 +3,9 @@ const router=express.Router();
 const cloudinary = require('../config/cloudinary');
 const upload = require('../middleware/multer');
 const fs = require('fs');
+const {getDb}=require('./db');
+
+
 
 router.post('/upload', upload.single('video'), async (req, res) => {
     try {
@@ -50,21 +53,46 @@ router.post('/upload', upload.single('video'), async (req, res) => {
 
   router.get('/fetch', async (req, res) => {
     try {
-      const db = getDb("videos");
+        const db = getDb("videos");
+        const users = await db.find().toArray();
+        if(users.length==0) return res.status(200).json({msg:'No Video Available'});
+        let allVideos = [];
 
-      const users = await db.find().toArray();
+        users.forEach(user => {
+            if (user.videos) {
+                user.videos.forEach(video => {
+                    allVideos.push({ ...video, creator: user._id });
+                });
+            }
+        });
 
-      let allVideos = [];
-      users.forEach(user => {
-          if (user.videos) {
-              allVideos.push(...user.videos);
-          }
-      });
+        allVideos.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
 
-      allVideos = allVideos.sort(() => Math.random() - 0.5);
-      allVideos.reverse();
+        let result = [];
+        let creatorQueue = new Map();
 
-      res.status(200).json(allVideos);
+        for (let video of allVideos) {
+            if (result.length === 0 || result[result.length - 1].creator !== video.creator) {
+                result.push(video);
+            } else {
+                if (!creatorQueue.has(video.creator)) {
+                    creatorQueue.set(video.creator, []);
+                }
+                creatorQueue.get(video.creator).push(video);
+            }
+        }
+
+        for (let [creator, videos] of creatorQueue) {
+            let index = 1;
+            while (videos.length) {
+                if (index >= result.length || result[index].creator !== creator) {
+                    result.splice(index, 0, videos.shift());
+                }
+                index += 2; 
+            }
+        }
+
+        res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ message: 'Failed to fetch videos', error: error.message });
     }

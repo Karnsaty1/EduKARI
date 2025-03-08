@@ -24,7 +24,7 @@ const Upload = () => {
 
   const handleSubmit=async()=>{
     try {
-        const resp1=await fetch(`${process.env.VITE_BACKEND}/data/upload`,{
+        const resp1=await fetch(`${import.meta.env.VITE_BACKEND}/data/upload`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
