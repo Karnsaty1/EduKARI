@@ -8,14 +8,20 @@ const Upload = () => {
  const [formData, setFormData] = useState({
    title: "",
     description: "",
-     video:null
+    video: null,
   });
 
   const handleFileChange = (e) => {
     setFormData({ ...formData, video: e.target.files[0] });
   };
 
-  const data = new FormData();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
     data.append("title", formData.title);
     data.append("description", formData.description);
     data.append("video", formData.video);
@@ -43,7 +49,7 @@ const Upload = () => {
           alert("Uploaded Successfully !!!");
         }
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
     finally{
       setLoading(false);
@@ -100,6 +106,7 @@ const Upload = () => {
 
     
   )
+}
 }
 
 export default Upload;

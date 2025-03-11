@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 import './comp.css';
 import loader from './ballsparade.gif';
 
@@ -7,6 +8,13 @@ const Dashboard = () => {
   const [videos, setVideos] = useState([]);
   const [showShareOptions, setShowShareOptions] = useState(null);
   const [loading ,setLoading]=useState(true);
+=======
+import "./dashboard.css";
+
+const Dashboard = () => {
+  const [videos, setVideos] = useState([]);
+  const [expanded, setExpanded] = useState({}); 
+>>>>>>> 65e8777cdc53d385e420ddfb1ebe99212bee9703
 
   useEffect(() => {
     const getData = async () => {
@@ -34,28 +42,16 @@ const Dashboard = () => {
     getData();
   }, []);
 
-  const shareVideo = (platform, videoUrl) => {
-    const encodedUrl = encodeURIComponent(videoUrl);
-
-    switch (platform) {
-      case "whatsapp":
-        window.open(`https://api.whatsapp.com/send?text=${encodedUrl}`, "_blank");
-        break;
-      case "facebook":
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, "_blank");
-        break;
-      case "twitter":
-        window.open(`https://twitter.com/intent/tweet?url=${encodedUrl}`, "_blank");
-        break;
-      case "telegram":
-        window.open(`https://t.me/share/url?url=${encodedUrl}`, "_blank");
-        break;
-      default:
-        break;
-    }
+  const toggleReadMore = (index) => {
+    setExpanded((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
+  const getInitials = (name) => (name ? name.charAt(0).toUpperCase() : "?");
+
+  
+
   return (
+<<<<<<< HEAD
     loading ? (
       <div>
         <img src={loader} alt='loader' className="loading-image"/>
@@ -104,6 +100,60 @@ const Dashboard = () => {
         </div>
       </div>
     )
+=======
+    <div className="dashboard-container">
+      <Link to="/upload">
+        <button className="add-video-btn">Add Video</button>
+      </Link>
+
+      <div className="video-grid">
+        {videos.length > 0 ? (
+          videos.map((video, index) => {
+            const words = video.description.split(" ");
+            const shortDesc = words.slice(0, 10).join(" ");
+            const isExpanded = expanded[index];
+
+            return (
+              <div key={index} className="video-card">
+                <div className="video-header">
+                  <div className="name-circle" style={{ backgroundColor: "#8E44AD" }}>
+                    {getInitials(video.name)}
+                  </div>
+                  <h3>{video.name}</h3>
+                </div>
+
+                <video
+                  controls
+                  onLoadedMetadata={(e) => {
+                    const videoElement = e.target;
+                    const aspectRatio = videoElement.videoWidth / videoElement.videoHeight;
+                    videoElement.parentElement.classList.add(
+                      aspectRatio > 1 ? "full-width-video" : "small-video"
+                    );
+                  }}
+                >
+                  <source src={video.videoUrl} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+
+                <h4>{video.title}</h4>
+                <p className="description">
+                  {isExpanded ? video.description : `${shortDesc}...`}{}
+                  {words.length > 10 && (
+                    <span className="read-more" onClick={() => toggleReadMore(index)}>
+                      {isExpanded ? " Read Less" : " Read More"}
+                    </span>
+                  )}
+                </p>
+              </div>
+            );
+          })
+        ) : (
+          <p className="no-videos">No videos available</p>
+        )}
+      </div>
+    </div>
+>>>>>>> 65e8777cdc53d385e420ddfb1ebe99212bee9703
   );
 };
 export default Dashboard;
