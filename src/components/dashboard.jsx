@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import './comp.css';
+import loader from './ballsparade.gif';
 
 const Dashboard = () => {
   const [videos, setVideos] = useState([]);
   const [showShareOptions, setShowShareOptions] = useState(null);
+  const [loading ,setLoading]=useState(true);
 
   useEffect(() => {
     const getData = async () => {
@@ -22,6 +25,9 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.error("Error is:", error);
+      }
+      finally{
+        setLoading(false);
       }
     };
 
@@ -50,40 +56,54 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <Link to="/upload">
-        <button>Add video</button>
-      </Link>
-      {videos.length > 0 ? (
-        videos.map((video, index) => (
-          <div key={index} className="video-card" style={{ border: "2px solid black", margin: "10px 0px" }}>
-            <h3 style={{ margin: "20px auto" }}>{video.name}</h3>
-            <h4 style={{ margin: "20px auto" }}>{video.title}</h4>
-            <p style={{ margin: "20px auto" }}>{video.description}</p>
-            <video controls width="50%">
-              <source src={video.videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+    loading ? (
+      <div>
+        <img src={loader} alt='loader' className="loading-image"/>
+      </div>
+    ) : (
+      <div className="dashboard">
+        <Link to="/upload">
+          <button className="add-video-btn">Add video</button>
+        </Link>
+        <div className="videos-container">
+          {videos.length > 0 ? (
+            Array.from({ length: Math.ceil(videos.length / 3) }).map((_, rowIndex) => (
+              <div key={rowIndex} className="video-row">
+                {videos.slice(rowIndex * 3+3, rowIndex * 3).map((video, index) => (
+                  <div key={index} className="video-card">
+                    <h3>{video.name}</h3>
+                    <h4>{video.title}</h4>
+                    <p>{video.description}</p>
+                    <video controls>
+                      <source src={video.videoUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
 
-           
-            <button onClick={() => setShowShareOptions(showShareOptions === index ? null : index)}>Share</button>
+                    <button
+                      className="share-button"
+                      onClick={() => setShowShareOptions(showShareOptions === index ? null : index)}
+                    >
+                      Share
+                    </button>
 
-           
-            {showShareOptions === index && (
-              <div className="share-options" style={{ marginTop: "10px" }}>
-                <button onClick={() => shareVideo("whatsapp", video.videoUrl)}>WhatsApp</button>
-                <button onClick={() => shareVideo("facebook", video.videoUrl)}>Facebook</button>
-                <button onClick={() => shareVideo("twitter", video.videoUrl)}>Twitter</button>
-                <button onClick={() => shareVideo("telegram", video.videoUrl)}>Telegram</button>
+                    {showShareOptions === index && (
+                      <div className="share-options">
+                        <button onClick={() => shareVideo("whatsapp", video.videoUrl)}>WhatsApp</button>
+                        <button onClick={() => shareVideo("facebook", video.videoUrl)}>Facebook</button>
+                        <button onClick={() => shareVideo("twitter", video.videoUrl)}>Twitter</button>
+                        <button onClick={() => shareVideo("telegram", video.videoUrl)}>Telegram</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-        ))
-      ) : (
-        <p>No videos available</p>
-      )}
-    </div>
+            ))
+          ) : (
+            <p className="no-videos">No videos available</p>
+          )}
+        </div>
+      </div>
+    )
   );
 };
-
 export default Dashboard;

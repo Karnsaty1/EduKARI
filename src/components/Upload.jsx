@@ -1,7 +1,9 @@
 import React,{useState} from 'react'
 import './comp.css'
+import loader from './Lightning.gif'
 const Upload = () => {
 
+  const [loading ,setLoading]=useState(false);
 
  const [formData, setFormData] = useState({
    title: "",
@@ -25,6 +27,7 @@ const Upload = () => {
   const handleSubmit=async(e)=>{
     e.preventDefault();
     try {
+      setLoading(true);
         const resp1=await fetch(`${import.meta.env.VITE_BACKEND}/data/upload`,{
             method:'POST',
            
@@ -42,40 +45,60 @@ const Upload = () => {
     } catch (error) {
         console.error(error);
     }
+    finally{
+      setLoading(false);
+    }
   }
 
 
   return (
-    <div>
-     <form onSubmit={handleSubmit} encType="multipart/form-data">
-  <input
-    type="text"
-    name="title"
-    placeholder="Video Title"
-    value={formData.title}
-    onChange={handleChange}
-    required
-  />
-  <textarea
-    type="text"
-    name="description"
-    placeholder="Video Description"
-    value={formData.description}
-    onChange={handleChange}
-    required
-  />
- 
-  <input
-    type="file"
-    name="video"
-    accept="video/*"
-    onChange={handleFileChange}
-    required
-  />
-  <button type="submit">Submit</button>
-</form>
 
-    </div>
+    loading?(
+
+      <div>
+        <img src={loader} alt='loader' className='loading-image'/>
+      </div>
+    )
+    
+    
+    :
+    
+    
+    
+    (<div>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+   <input
+     type="text"
+     name="title"
+     placeholder="Video Title"
+     value={formData.title}
+     onChange={handleChange}
+     required
+   />
+   <textarea
+     type="text"
+     name="description"
+     placeholder="Video Description"
+     value={formData.description}
+     onChange={handleChange}
+     required
+   />
+  
+   <input
+     type="file"
+     name="video"
+     accept="video/*"
+     onChange={handleFileChange}
+     required
+   />
+   <button type="submit">Submit</button>
+ </form>
+ 
+     </div>)
+
+
+
+    
   )
 }
 
