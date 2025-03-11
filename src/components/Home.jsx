@@ -1,11 +1,11 @@
 import React from 'react'
-import NavbarBeforeLog from './NavbarBeforeLog'
-
+import Navbar from './Navbar'
+import './Home.css'
 const Home = () => {
   return (
     <div className='div-home'>
         <header>
-        <NavbarBeforeLog/>
+        <Navbar/>
         <img src="https://th.bing.com/th/id/R.8107a38af6851e818b451bd64056be02?rik=mbAmoNwWMdHXFg&pid=ImgRaw&r=0" alt="" />
         </header>
         <footer className='home-footer'>
