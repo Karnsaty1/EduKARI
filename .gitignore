@@ -11,7 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-
+backend/
+.env
 package-lock.json
 .vscode/*
 !.vscode/extensions.json

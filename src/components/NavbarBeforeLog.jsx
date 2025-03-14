@@ -7,7 +7,7 @@ const NavbarBeforeLog = () => {
         <div>
       <nav className='navbar-forul'>
         <ul type='none'>
-            <li className='Tagile'><strong>Stream</strong></li>
+            <li className='Tagile'><strong>EduKARI</strong></li>
              <li><Link to='/sign'><button>SignUp</button></Link></li>
             
           
